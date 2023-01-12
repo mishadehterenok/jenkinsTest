@@ -5,11 +5,12 @@ pipeline {
             label 'master'
 //             checkout scm
 //             props = readProperties(file:backup.properties)
+            def props = readProperties  file: 'backup.properties'
+            def Var1 = props['job.frequency']
+            def Var2 = props['max.count']
         }
     }
-    def props = readProperties  file: 'backup.properties'
-    def Var1 = props['job.frequency']
-    def Var2 = props['max.count']
+
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
