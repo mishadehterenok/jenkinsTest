@@ -20,11 +20,11 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                script {
+//                 script {
                     echo 'Hello World'
                     echo env.props['max.count']
                     echo env.props['job.frequency']
-                }
+//                 }
             }
         }
     }
