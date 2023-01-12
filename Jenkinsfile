@@ -22,12 +22,10 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-            def props = readProperties  file: 'backup.properties'
-            def Var1 = props['job.frequency']
-            def Var2 = props['max.count']
+                props = readProperties  file: 'backup.properties'
                 echo 'Hello World'
-                echo "Var1=${Var1}"
-                echo "Var2=${Var2}"
+                echo "job.frequency -- ${props.job.frequency}"
+                echo "max.count -- ${props.max.count}"
             }
         }
     }
