@@ -20,6 +20,7 @@ pipeline {
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
+        loadProperties ()
         cron (props["job.frequency"])
     }
 
