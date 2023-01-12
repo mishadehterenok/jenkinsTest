@@ -20,7 +20,7 @@ pipeline {
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
-//         cron (${props["job.frequency"]})
+        cron (props["job.frequency"])
     }
 
 
