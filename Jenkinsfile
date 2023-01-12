@@ -5,9 +5,7 @@ pipeline {
             label 'master'
 //             checkout scm
 //             props = readProperties(file:backup.properties)
-            def props = readProperties  file: 'backup.properties'
-            def Var1 = props['job.frequency']
-            def Var2 = props['max.count']
+
         }
     }
 
@@ -24,6 +22,9 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
+            def props = readProperties  file: 'backup.properties'
+            def Var1 = props['job.frequency']
+            def Var2 = props['max.count']
                 echo 'Hello World'
                 echo "Var1=${Var1}"
                 echo "Var2=${Var2}"
