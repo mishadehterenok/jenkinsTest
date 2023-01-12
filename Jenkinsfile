@@ -1,11 +1,10 @@
 #!groovy
+def props = readProperties  file: 'backup.properties'
 pipeline {
     agent {
         node {
             label 'master'
-//             checkout scm
-//             props = readProperties(file:backup.properties)
-
+            props = readProperties(file:backup.properties)
         }
     }
 
@@ -23,7 +22,6 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
-                    props = readProperties  file: 'backup.properties'
                     echo 'Hello World'
                     echo props['max.count']
                     echo props['job.frequency']
