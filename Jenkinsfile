@@ -1,10 +1,15 @@
 #!groovy
-props = null
+// def props = null
+def nodeProp = null
 
-def loadProperties() {
-	checkout scm
-	props = readProperties  file: 'backup.properties'
+node {
+    nodeProp = readProperties file: 'backup.properties'
 }
+
+// def loadProperties() {
+// 	checkout scm
+// 	props = readProperties  file: 'backup.properties'
+// }
 
 pipeline {
     agent {
@@ -14,13 +19,13 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps ()
     }
-    environment {
-        pro = readProperties  file: 'backup.properties'
-    }
+//     environment {
+//         pro = readProperties  file: 'backup.properties'
+//     }
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
-        cron (pro["job.frequency"])
+        cron (nodeProp["job.frequency"])
     }
 
 
@@ -30,8 +35,8 @@ pipeline {
                 script {
                     echo 'Hello World'
                     loadProperties ()
-                    echo props['max.count']
-                    echo props['job.frequency']
+                    echo nodeProp['max.count']
+                    echo nodeProp['job.frequency']
                 }
             }
         }
