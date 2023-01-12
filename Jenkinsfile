@@ -1,15 +1,20 @@
 #!groovy
+def props = [:]
 pipeline {
     agent {
-        node { label 'master' }
+        node {
+            label 'master'
+            checkout scm
+            props = readProperties  file: 'backup.properties'
+         }
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps ()
     }
-    environment {
-        props = readProperties  file: 'backup.properties'
-    }
+//     environment {
+//
+//     }
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
