@@ -15,12 +15,12 @@ pipeline {
         timestamps ()
     }
     environment {
-        loadProperties ()
+        pro = readProperties  file: 'backup.properties'
     }
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
-        cron (props["job.frequency"])
+        cron (pro["job.frequency"])
     }
 
 
