@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     echo 'Hello World'
-                    loadProperties ()
+//                     loadProperties ()
                     echo nodeProp['max.count']
                     echo nodeProp['job.frequency']
                 }
