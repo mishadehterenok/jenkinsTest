@@ -1,11 +1,11 @@
 #!groovy
-def props = [:]
-podTemplate {
-    node('master') {
-        checkout scm
-        props = readProperties  file: 'backup.properties'
-    }
+props = null
+
+def loadProperties() {
+	checkout scm
+	props = readProperties  file: 'backup.properties'
 }
+
 pipeline {
     agent {
         node { label 'master' }
@@ -27,11 +27,12 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-//                 script {
+                script {
                     echo 'Hello World'
+                    loadProperties ()
                     echo props['max.count']
                     echo props['job.frequency']
-//                 }
+                }
             }
         }
     }
