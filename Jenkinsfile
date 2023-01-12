@@ -1,9 +1,4 @@
 #!groovy
-
-def props = readProperties  file: 'backup.properties'
-def Var1 = props['job.frequency']
-def Var2 = props['max.count']
-
 pipeline {
     agent {
         node {
@@ -12,6 +7,9 @@ pipeline {
 //             props = readProperties(file:backup.properties)
         }
     }
+    def props = readProperties  file: 'backup.properties'
+    def Var1 = props['job.frequency']
+    def Var2 = props['max.count']
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
