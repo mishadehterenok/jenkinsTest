@@ -1,10 +1,10 @@
 #!groovy
-def props = readProperties  file: 'backup.properties'
+def props
 pipeline {
     agent {
         node {
             label 'master'
-//             props = readProperties(file:backup.properties)
+            props = readProperties(file:backup.properties)
         }
     }
 
