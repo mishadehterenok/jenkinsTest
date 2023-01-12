@@ -14,13 +14,12 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps ()
     }
-//     environment {
-//
-//     }
+    environment {
+        loadProperties ()
+    }
     triggers {
         pollSCM ('* * * * *')
 //         cron ('* * * * *')
-        loadProperties ()
         cron (props["job.frequency"])
     }
 
