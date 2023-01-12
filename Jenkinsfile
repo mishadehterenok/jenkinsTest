@@ -25,8 +25,8 @@ pipeline {
                 script {
                     props = readProperties  file: 'backup.properties'
                     echo 'Hello World'
-                    sh "echo $props['max.count']"
-//                     echo $props['max.count']
+//                     sh "echo $props['max.count']"
+                    echo props['max.count']
 //                     echo "job.frequency -- ${props.job.frequency}"
 //                     echo "max.count -- ${props.max.count}"
                 }
