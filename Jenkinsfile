@@ -1,5 +1,6 @@
-def props = readProperties  file: 'backup.properties'
+#!groovy
 
+def props = readProperties  file: 'backup.properties'
 def Var1 = props['job.frequency']
 def Var2 = props['max.count']
 
@@ -12,13 +13,12 @@ pipeline {
         }
     }
     triggers {
-//         pollSCM ('* * * * *')
+        pollSCM ('* * * * *')
 //         cron ('* * * * *')
 //         cron (${props["job.frequency"]})
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-        timestemps()
     }
 
     stages {
