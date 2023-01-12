@@ -1,12 +1,14 @@
 #!groovy
 def props = [:]
+podTemplate {
+    node('master') {
+        checkout scm
+        props = readProperties  file: 'backup.properties'
+    }
+}
 pipeline {
     agent {
-        node {
-            label 'master'
-            checkout scm
-            props = readProperties  file: 'backup.properties'
-         }
+        node { label 'master' }
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
@@ -27,8 +29,8 @@ pipeline {
             steps {
 //                 script {
                     echo 'Hello World'
-                    echo "${env.props['max.count']}"
-//                     echo env.props['job.frequency']
+                    echo props['max.count']
+                    echo props['job.frequency']
 //                 }
             }
         }
