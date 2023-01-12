@@ -22,7 +22,7 @@ pipeline {
             steps {
 //                 script {
                     echo 'Hello World'
-                    echo ${env.props['max.count']}
+                    echo "${env.props['max.count']}"
 //                     echo env.props['job.frequency']
 //                 }
             }
