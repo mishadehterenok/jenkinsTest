@@ -1,8 +1,18 @@
 #!groovy
 def nodeProp = null
-
+def frequency = null
 node {
     nodeProp = readProperties file: 'backup.properties'
+    if (nodeProp['job.frequency'] == 'HOUR') {
+        frequency = "0 */1 * * *"
+    } if (nodeProp['job.frequency'] == 'DAY') {
+        frequency = "0 0 * * *"
+    } if (nodeProp['job.frequency'] == 'WEEK') {
+        frequency = "0 0 */1 * 1"
+    } if (nodeProp['job.frequency'] == 'MONTH') {
+        frequency = "0 0 1 */1 *"
+    } else {
+        error("Invalid frequency: $nodeProp['job.frequency'], aborting the build.") }
 }
 
 pipeline {
@@ -15,7 +25,9 @@ pipeline {
     }
     triggers {
         pollSCM ('* * * * *')
-        cron (nodeProp["job.frequency"])
+//         cron (nodeProp["job.frequency"])
+        cron '''TZ=$nodeProp["timezone"]
+                $frequency'''
     }
     stages {
         stage('Hello') {
@@ -24,6 +36,8 @@ pipeline {
                     echo 'Hello World'
                     echo nodeProp['max.count']
                     echo nodeProp['job.frequency']
+                    echo nodeProp['timezone']
+                    echo $frequency
                 }
             }
         }
