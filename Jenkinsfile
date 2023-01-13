@@ -6,19 +6,13 @@ node {
     script {
         if (nodeProp['job.frequency'] == 'HOUR') {
             frequency = "0 */1 * * *"
-        }
-        else if (nodeProp['job.frequency'] == 'DAY') {
+        } else if (nodeProp['job.frequency'] == 'DAY') {
             frequency = "0 0 * * *"
-        }
-        else if (nodeProp['job.frequency'] == 'WEEK') {
+        } else if (nodeProp['job.frequency'] == 'WEEK') {
             frequency = "0 0 */1 * 1"
-        }
-        else if (nodeProp['job.frequency'] == 'MONTH') {
+        } else if (nodeProp['job.frequency'] == 'MONTH') {
             frequency = "0 0 1 */1 *"
-        }
-        else {
-            echo nodeProp['job.frequency']
-            echo frequency
+        } else {
             error("Invalid frequency: ${nodeProp['job.frequency']}, aborting the build.")
         }
     }
@@ -33,9 +27,7 @@ pipeline {
         timestamps ()
     }
     triggers {
-//         pollSCM ('* * * * *')
-//         cron (nodeProp["job.frequency"])
-        cron """TZ=Europe/Minsk
+        cron """TZ=${nodeProp["timezone"]}
                 ${frequency}"""
     }
     stages {
@@ -43,10 +35,10 @@ pipeline {
             steps {
                 script {
                     echo 'Hello World'
-                    echo nodeProp['max.count']
+                    echo "max.count - ${nodeProp['max.count']}"
                     echo nodeProp['job.frequency']
                     echo nodeProp['timezone']
-                    echo $frequency
+                    echo frequency
                 }
             }
         }
