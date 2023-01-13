@@ -32,8 +32,8 @@ pipeline {
     triggers {
 //         pollSCM ('* * * * *')
 //         cron (nodeProp["job.frequency"])
-        cron TZ=Europe/Minsk
-                ${frequency}
+        cron """TZ=Europe/Minsk
+        ${frequency}"""
     }
     stages {
         stage('Hello') {
