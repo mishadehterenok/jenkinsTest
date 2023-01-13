@@ -4,7 +4,7 @@ def frequency = null
 node {
     nodeProp = readProperties file: 'backup.properties'
     script {
-        if ("${nodeProp['job.frequency']}".replaceAll("[\n\r]", "") == 'HOUR') {
+        if (nodeProp['job.frequency'] == 'HOUR') {
             frequency = "0 */1 * * *"
         }
         if (nodeProp['job.frequency'] == 'DAY') {
@@ -17,6 +17,7 @@ node {
             frequency = "0 0 1 */1 *"
         } else {
         echo nodeProp['job.frequency']
+        echo $frequency
             error("Invalid frequency: ${nodeProp['job.frequency']}, aborting the build.") }
     }
 }
