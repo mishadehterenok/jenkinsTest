@@ -16,7 +16,7 @@ node {
         if (nodeProp['job.frequency'] == 'MONTH') {
             frequency = "0 0 1 */1 *"
         } else {
-            error("Invalid frequency: $nodeProp['job.frequency'], aborting the build.") }
+            error("Invalid frequency: nodeProp['job.frequency'], aborting the build.") }
     }
 }
 
