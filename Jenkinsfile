@@ -4,7 +4,7 @@ def frequency = null
 node {
     nodeProp = readProperties file: 'backup.properties'
     script {
-        if (${nodeProp['job.frequency']} == "HOUR") {
+        if ("${nodeProp['job.frequency']}" == "HOUR") {
             frequency = "0 */1 * * *"
         }
         if (nodeProp['job.frequency'] == 'DAY') {
