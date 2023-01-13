@@ -43,7 +43,7 @@ pipeline {
                     echo nodeProp['max.count']
                     echo nodeProp['job.frequency']
                     echo nodeProp['timezone']
-                    echo ${frequency}
+                    echo $frequency
                 }
             }
         }
