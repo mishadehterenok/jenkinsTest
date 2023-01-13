@@ -7,13 +7,13 @@ node {
         if (nodeProp['job.frequency'] == 'HOUR') {
             frequency = "0 */1 * * *"
         }
-        if (nodeProp['job.frequency'] == 'DAY') {
+        else if (nodeProp['job.frequency'] == 'DAY') {
             frequency = "0 0 * * *"
         }
-        if (nodeProp['job.frequency'] == 'WEEK') {
+        else if (nodeProp['job.frequency'] == 'WEEK') {
             frequency = "0 0 */1 * 1"
         }
-        if (nodeProp['job.frequency'] == 'MONTH') {
+        else if (nodeProp['job.frequency'] == 'MONTH') {
             frequency = "0 0 1 */1 *"
         }
         else {
