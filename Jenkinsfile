@@ -30,7 +30,7 @@ pipeline {
         timestamps ()
     }
     triggers {
-        pollSCM ('* * * * *')
+//         pollSCM ('* * * * *')
 //         cron (nodeProp["job.frequency"])
         cron '''TZ=$nodeProp["timezone"]
                 $frequency'''
