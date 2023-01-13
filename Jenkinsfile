@@ -33,7 +33,7 @@ pipeline {
 //         pollSCM ('* * * * *')
 //         cron (nodeProp["job.frequency"])
         cron '''TZ=Europe/Minsk
-                $frequency'''
+                ${frequency}'''
     }
     stages {
         stage('Hello') {
