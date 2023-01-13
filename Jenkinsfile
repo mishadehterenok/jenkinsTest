@@ -34,11 +34,10 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
-                    echo 'Hello World'
                     echo "max.count - ${nodeProp['max.count']}"
-                    echo nodeProp['job.frequency']
-                    echo nodeProp['timezone']
-                    echo frequency
+                    echo "job.frequency - ${nodeProp['job.frequency']}"
+                    echo "timezone - ${nodeProp['timezone']}"
+                    echo "frequency - ${frequency}"
                 }
             }
         }
