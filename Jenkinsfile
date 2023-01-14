@@ -30,10 +30,21 @@ pipeline {
         cron """TZ=${nodeProp["timezone"]}
                 ${frequency}"""
     }
+    environment {
+        project = "eliflow-backend"
+        projectName = "Eliflow backend"
+        moduleEliflow = "eliflow"
+
+        chatId = "-1001558288364"
+        telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
+    }
+
     stages {
         stage('Hello') {
             steps {
                 script {
+                    ls
+                    sh 'ls'
                     echo "max.count - ${nodeProp['max.count']}"
                     echo "job.frequency - ${nodeProp['job.frequency']}"
                     echo "timezone - ${nodeProp['timezone']}"
