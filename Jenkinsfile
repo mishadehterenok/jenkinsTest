@@ -49,6 +49,7 @@ pipeline {
                     docker compose version
                     '''
                     sh 'ls'
+                    sh 'pwd'
                     echo "max.count - ${nodeProp['max.count']}"
                     echo "job.frequency - ${nodeProp['job.frequency']}"
                     echo "timezone - ${nodeProp['timezone']}"
