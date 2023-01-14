@@ -43,6 +43,11 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
+                    sh '''
+                    docker info
+                    docker version
+                    docker compose version
+                    '''
                     sh 'ls'
                     echo "max.count - ${nodeProp['max.count']}"
                     echo "job.frequency - ${nodeProp['job.frequency']}"
