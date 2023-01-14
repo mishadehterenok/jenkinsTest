@@ -43,7 +43,6 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
-                    ls
                     sh 'ls'
                     echo "max.count - ${nodeProp['max.count']}"
                     echo "job.frequency - ${nodeProp['job.frequency']}"
