@@ -2,9 +2,8 @@
 def nodeProp = null
 def frequency = null
 node {
-    stage "Checkout Repo"
     checkout scm
-    nodeProp = readProperties file: '/backup.properties'
+    nodeProp = readProperties file: 'backup.properties'
     script {
         if (nodeProp['job.frequency'] == 'HOUR') {
             frequency = "0 */1 * * *"
