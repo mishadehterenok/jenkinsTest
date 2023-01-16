@@ -54,7 +54,7 @@ pipeline {
                     frequency - ${frequency}
                     """
                     env.buildStartMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation started #${env.BUILD_NUMBER}"
-                    env.buildFinishMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup finished #${env.BUILD_NUMBER}"
+                    env.buildFinalMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup finished #${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -141,6 +141,32 @@ pipeline {
                 failure {
                     sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
                 }
+                success {
+                    sh "echo 'SUCCESS' > ${env.stateFile}"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def state = readFile(file: "${env.stateFile}").trim().replace("\n", "")
+
+                String resultMessage = "${env.buildFinalMessage} - ${state}"
+                echo "______Status:______"
+                echo "${resultMessage}"
+//                     sh """
+//                         curl -X POST -H 'Content-Type: application/json' \\
+//                         -d '{"chat_id": "${env.chatId}", "text": "${deployMessage}", "disable_notification": false}' \\
+//                         ${env.telegramUrl}
+//                        """
+            }
+            cleanWs()
+            dir("${env.WORKSPACE}") {
+                deleteDir()
+            }
+            dir("${env.WORKSPACE}@tmp") {
+                deleteDir()
             }
         }
     }
