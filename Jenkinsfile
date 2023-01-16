@@ -78,27 +78,27 @@ pipeline {
                        """
                 }
             }
-            post {
-                failure {
-                script{
-                env.status="FAIL"
-                }
+//             post {
+//                 failure {
+//                 script{
+//                 env.status="FAIL"
+//                 }
 //                     sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
-                }
-                success {
-                script{
-                                env.status="SUCCESS"
-                                }
+//                 }
+//                 success {
+//                 script{
+//                                 env.status="SUCCESS"
+//                                 }
 //                     sh "echo 'SUCCESS' > ${env.stateFile}"
-                }
-            }
+//                 }
+//             }
         }
     }
     post {
         always {
             script {
 //                 def state = readFile(file: "${env.stateFile}").trim().replace("\n", "")
-                String resultMessage = "${env.buildFinalMessage} - ${env.state}"
+                String resultMessage = "${env.buildFinalMessage} - ${currentBuild.currentResult}"
                 echo "______Status:______"
                 echo "${resultMessage}"
 //                     sh """
