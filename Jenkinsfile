@@ -131,10 +131,11 @@ pipeline {
         stage("Backup creation") {
             steps {
                 script {
-                    sh """
-                    docker cp ./mongo/scripts eliflow_mongodb:/opt/eliflow_scripts/
-                    docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
-                    """
+                    echo "=================BACKUP ACTION========================"
+//                     sh """
+//                     docker cp ./mongo/scripts eliflow_mongodb:/opt/eliflow_scripts/
+//                     docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
+//                     """
                 }
             }
             post {
@@ -161,13 +162,13 @@ pipeline {
 //                         ${env.telegramUrl}
 //                        """
             }
-            cleanWs()
-            dir("${env.WORKSPACE}") {
-                deleteDir()
-            }
-            dir("${env.WORKSPACE}@tmp") {
-                deleteDir()
-            }
+//             cleanWs()
+//             dir("${env.WORKSPACE}") {
+//                 deleteDir()
+//             }
+//             dir("${env.WORKSPACE}@tmp") {
+//                 deleteDir()
+//             }
         }
     }
 }
