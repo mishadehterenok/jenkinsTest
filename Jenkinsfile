@@ -38,7 +38,7 @@ pipeline {
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
 
         stateFile = "state.log"
-        PATH="/usr/local/bin/docker-compose"
+//         PATH="/usr/local/bin/docker-compose"
     }
 
     stages {
@@ -47,6 +47,7 @@ pipeline {
                 script {
                     sh 'ls'
                     sh 'pwd'
+                    sh 'docker compose version'
                     echo """
                     env.branch_name - ${env.branch_name}
                     max.count - ${nodeProp['max.count']}
