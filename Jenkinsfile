@@ -106,13 +106,6 @@ pipeline {
 //                         ${env.telegramUrl}
 //                        """
             }
-            cleanWs()
-            dir("${env.WORKSPACE}") {
-                deleteDir()
-            }
-            dir("${env.WORKSPACE}@tmp") {
-                deleteDir()
-            }
         }
     }
 }
