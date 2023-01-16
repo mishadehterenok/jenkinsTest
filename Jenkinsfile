@@ -79,10 +79,16 @@ pipeline {
             }
             post {
                 failure {
-                    env.status = "FAILED"
+                script{
+                env.status="FAIL"
+                }
+//                     sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
                 }
                 success {
-                    env.status = "SUCCESS"
+                script{
+                                env.status="SUCCESS"
+                                }
+//                     sh "echo 'SUCCESS' > ${env.stateFile}"
                 }
             }
         }
@@ -90,6 +96,7 @@ pipeline {
     post {
         always {
             script {
+//                 def state = readFile(file: "${env.stateFile}").trim().replace("\n", "")
                 String resultMessage = "${env.buildFinalMessage} - ${env.state}"
                 echo "______Status:______"
                 echo "${resultMessage}"
