@@ -72,7 +72,7 @@ pipeline {
                 script {
                     echo "=================BACKUP ACTION========================"
                     sh """
-                        docker cp ./create_backup.sh eliflow_mongodb:/opt/eliflow_scripts/
+                        docker cp ./create_backup.sh eliflow_mongodb:/opt/
                         docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
                        """
                 }
