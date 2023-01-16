@@ -38,6 +38,7 @@ pipeline {
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
 
         stateFile = "state.log"
+        PATH="/usr/local/bin/docker-compose"
     }
 
     stages {
@@ -110,7 +111,7 @@ pipeline {
                             sh "docker rm -f \$(${env.grepOldContainers})"
                         }
                         echo "Starting up new container"
-                        sh "/usr/local/bin/docker-compose up -d mongodb"
+                        sh "docker-compose up -d mongodb"
                         sleep(60)
                         def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
 
