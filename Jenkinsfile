@@ -41,15 +41,11 @@ pipeline {
     }
 
     stages {
-        stage('Hello') {
+        stage('Info') {
             steps {
                 script {
-                    sh 'ls'
-                    sh 'pwd'
-                    sh 'docker compose version'
                     echo """
                     env.branch_name - ${env.branch_name}
-                    bb
                     max.count - ${nodeProp['max.count']}
                     job.frequency - ${nodeProp['job.frequency']}
                     timezone - ${nodeProp['timezone']}
@@ -98,9 +94,6 @@ pipeline {
                         sh "docker ps"
                     }
                     else {
-                    sh "docker ps"
-                    echo "${PATH}"
-                    sh 'ls'
                         echo "No working containers found with name: ${env.dockerContainer}"
                         String[] containers = []
                         def statusCode = sh(script: "${env.grepOldContainers}", returnStatus: true)
@@ -163,11 +156,11 @@ pipeline {
                 String resultMessage = "${env.buildFinalMessage} - ${state}"
                 echo "______Status:______"
                 echo "${resultMessage}"
-                    sh """
-                        curl -X POST -H 'Content-Type: application/json' \\
-                        -d '{"chat_id": "${env.chatId}", "text": "${deployMessage}", "disable_notification": false}' \\
-                        ${env.telegramUrl}
-                       """
+//                     sh """
+//                         curl -X POST -H 'Content-Type: application/json' \\
+//                         -d '{"chat_id": "${env.chatId}", "text": "${resultMessage}", "disable_notification": false}' \\
+//                         ${env.telegramUrl}
+//                        """
             }
             cleanWs()
             dir("${env.WORKSPACE}") {
