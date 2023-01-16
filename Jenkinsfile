@@ -32,7 +32,7 @@ pipeline {
     }
     environment {
         project = "eliflow-backend"
-        branch_name = "dev"
+        branch_name = "demo"
 
         chatId = "-1001558288364"
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
@@ -47,15 +47,15 @@ pipeline {
                     sh 'ls'
                     sh 'pwd'
                     echo """
-                        env.BRANCH_NAME - ${env.BRANCH_NAME}
-                        env.branch_name - ${env.branch_name}
-                        max.count - ${nodeProp['max.count']}
-                        job.frequency - ${nodeProp['job.frequency']}
-                        timezone - ${nodeProp['timezone']}
-                        frequency - ${frequency}
-                        """
-                    env.buildStartMessage = "${env.projectName} CI/CD #${env.BRANCH_NAME} backup creation started #${env.BUILD_NUMBER}"
-                    env.buildFinishMessage = "${env.projectName} CI/CD #${env.BRANCH_NAME} backup finished #${env.BUILD_NUMBER}"
+                    env.BRANCH_NAME - ${env.BRANCH_NAME}
+                    env.branch_name - ${env.branch_name}
+                    max.count - ${nodeProp['max.count']}
+                    job.frequency - ${nodeProp['job.frequency']}
+                    timezone - ${nodeProp['timezone']}
+                    frequency - ${frequency}
+                    """
+                    env.buildStartMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation started #${env.BUILD_NUMBER}"
+                    env.buildFinishMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup finished #${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -87,7 +87,7 @@ pipeline {
 //         stage("Backup action") {
 //             environment {
 //                 dockerContainer = "eliflow_mongodb"
-//                 grepOldContainers = "docker ps -a --format {{.Names}} | grep ${env.dockerImage}"
+//                 grepOldContainers = "docker ps -a --format '{{.Names}}'' | grep mongodb"
 //             }
 //             steps {
 //                 script {
@@ -97,9 +97,10 @@ pipeline {
 //                     if (statusCode == 0) {
 //                         containers = sh(script: "${env.grepOldContainers}", returnStdout: true).split("\n")
 //                     }
-//                     echo "Running containers: $containers"
+//                     echo "Available containers: $containers"
 //
 //                     if (containers.length > 0 && !containers[0].isEmpty()) {
+//                         echo "Removing containers"
 //                         sh "docker rm -f \$(${env.grepOldContainers})"
 //                     }
 //                 }
