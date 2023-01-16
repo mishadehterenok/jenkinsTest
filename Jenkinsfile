@@ -32,7 +32,7 @@ pipeline {
     }
     environment {
         project = "eliflow-backend"
-        branch_name = "demo"
+        branch_name = "dev"
 
         chatId = "-1001558288364"
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
@@ -47,7 +47,6 @@ pipeline {
                     sh 'ls'
                     sh 'pwd'
                     echo """
-                    env.BRANCH_NAME - ${env.BRANCH_NAME}
                     env.branch_name - ${env.branch_name}
                     max.count - ${nodeProp['max.count']}
                     job.frequency - ${nodeProp['job.frequency']}
@@ -84,45 +83,65 @@ pipeline {
                 }
             }
         }
-//         stage("Backup action") {
-//             environment {
-//                 dockerContainer = "eliflow_mongodb"
-//                 grepOldContainers = "docker ps -a --format '{{.Names}}'' | grep mongodb"
-//             }
-//             steps {
-//                 script {
-//                     String[] containers = []
-//                     def statusCode = sh(script: "${env.grepOldContainers}", returnStatus: true)
-//
-//                     if (statusCode == 0) {
-//                         containers = sh(script: "${env.grepOldContainers}", returnStdout: true).split("\n")
-//                     }
-//                     echo "Available containers: $containers"
-//
-//                     if (containers.length > 0 && !containers[0].isEmpty()) {
-//                         echo "Removing containers"
-//                         sh "docker rm -f \$(${env.grepOldContainers})"
-//                     }
-//                 }
-//                 sh "docker build -t ${env.dockerImage} ."
-//                 sh '''
-//
-//                       '''
-//
-//                 script {
-//                     sleep(60)
-//                     def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}",
-//                     returnStdout: true).trim()
-//
-//                     if (isContainerRunning == 'true') {
-//                         currentBuild.result = 'SUCCESS'
-//                     } else {
-//                         sh "docker logs ${env.dockerContainer} > ${env.dockerContainer}.log"
-//                         archiveArtifacts "${env.dockerContainer}.log"
-//                         error "Docker container stopped. See logs in artifacts."
-//                     }
-//                 }
-//             }
-//         }
+        stage("Run database container") {
+            environment {
+                dockerContainer = "eliflow_mongodb"
+                grepOldContainers = "docker ps -a --format '{{.Names}}'' | grep mongodb"
+                grepRunningContainer = "docker ps --format '{{.Names}}'' | grep ${dockerContainer}"
+            }
+            steps {
+                script {
+                    if (sh(script: "${env.grepRunningContainer}", returnStatus: true) == 0) {
+                        echo "Proceeding with existing running database container: ${env.dockerContainer}"
+                        sh "docker ps"
+                    }
+                    else {
+                        echo "No working containers found with name: ${env.dockerContainer}"
+                        String[] containers = []
+                        def statusCode = sh(script: "${env.grepOldContainers}", returnStatus: true)
+
+                        if (statusCode == 0) {
+                            containers = sh(script: "${env.grepOldContainers}", returnStdout: true).split("\n")
+                        }
+                        echo "Available old containers: $containers"
+
+                        if (containers.length > 0 && !containers[0].isEmpty()) {
+                            echo "Removing old containers"
+                            sh "docker rm -f \$(${env.grepOldContainers})"
+                        }
+                        echo "Starting up new container"
+                        sh "docker-compose up -d mongodb"
+                        sleep(60)
+                        def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
+
+                        if (isContainerRunning == 'false') {
+                            sh "docker logs ${env.dockerContainer} > ${env.dockerContainer}.log"
+                            archiveArtifacts "${env.dockerContainer}.log"
+                            error "Docker container stopped. See logs in artifacts."
+                        }
+                    }
+                }
+            }
+            post {
+                failure {
+                    sh "echo 'FAILED TO RUN DATABASE CONTAINER' > ${env.stateFile}"
+                }
+            }
+        }
+        stage("Backup creation") {
+            steps {
+                script {
+                    sh """
+                    docker cp ./mongo/scripts eliflow_mongodb:/opt/eliflow_scripts/
+                    docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
+                    """
+                }
+            }
+            post {
+                failure {
+                    sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
+                }
+            }
+        }
     }
 }
