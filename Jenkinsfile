@@ -32,12 +32,9 @@ pipeline {
     }
     environment {
         project = "eliflow-backend"
-        branch_name = "dev"
 
         chatId = "-1001558288364"
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
-
-        stateFile = "state.log"
     }
 
     stages {
@@ -45,14 +42,13 @@ pipeline {
             steps {
                 script {
                     echo """
-                    env.branch_name - ${env.branch_name}
                     max.count - ${nodeProp['max.count']}
                     job.frequency - ${nodeProp['job.frequency']}
                     timezone - ${nodeProp['timezone']}
                     frequency - ${frequency}
                     """
-                    env.buildStartMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation job started #${env.BUILD_NUMBER}"
-                    env.buildFinalMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation job finished #${env.BUILD_NUMBER}"
+                    env.buildStartMessage = "${env.project} CI/CD backup creation job started #${env.BUILD_NUMBER}"
+                    env.buildFinalMessage = "${env.project} CI/CD backup creation job finished #${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -66,22 +62,7 @@ pipeline {
 //                    """
             }
         }
-
-        stage('Git clone') {
-            steps {
-                sh "rm -rf ${env.project}"
-                sh "git clone --progress https://ayurkov:perpentum@gitlab.elinext.com/eliflow/backend-new.git ${env.project}"
-                dir ("${env.project}") {
-                    sh "git checkout ${env.branch_name}"
-                }
-            }
-            post {
-                failure {
-                    sh "echo 'FAILED TO CLONE REPOSITORY' > ${env.stateFile}"
-                }
-            }
-        }
-        stage("Run database container") {
+        stage("Backup creation") {
             environment {
                 dockerContainer = "eliflow_mongodb"
                 grepOldContainers = "docker ps -a --format '{{.Names}}' | grep mongodb"
@@ -89,61 +70,19 @@ pipeline {
             }
             steps {
                 script {
-                    if (sh(script: "${env.grepRunningContainer}", returnStatus: true) == 0) {
-                        echo "Proceeding with existing running database container: ${env.dockerContainer}"
-                        sh "docker ps"
-                    }
-                    else {
-                        echo "No working containers found with name: ${env.dockerContainer}"
-                        String[] containers = []
-                        def statusCode = sh(script: "${env.grepOldContainers}", returnStatus: true)
-
-                        if (statusCode == 0) {
-                            containers = sh(script: "${env.grepOldContainers}", returnStdout: true).split("\n")
-                        }
-                        echo "Available old containers: $containers"
-
-                        if (containers.length > 0 && !containers[0].isEmpty()) {
-                            echo "Removing old containers"
-                            sh "docker rm -f \$(${env.grepOldContainers})"
-                        }
-                        echo "Starting up new container"
-                        dir ("${env.project}") {
-                            sh "docker compose up -d mongodb"
-                        }
-                        sleep(60)
-                        def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
-
-                        if (isContainerRunning == 'false') {
-                            sh "docker logs ${env.dockerContainer} > ${env.dockerContainer}.log"
-                            archiveArtifacts "${env.dockerContainer}.log"
-                            error "Docker container stopped. See logs in artifacts."
-                        }
-                    }
-                }
-            }
-            post {
-                failure {
-                    sh "echo 'FAILED TO RUN DATABASE CONTAINER' > ${env.stateFile}"
-                }
-            }
-        }
-        stage("Backup creation") {
-            steps {
-                script {
                     echo "=================BACKUP ACTION========================"
-//                     sh """
-//                     docker cp ./mongo/scripts eliflow_mongodb:/opt/eliflow_scripts/
-//                     docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
-//                     """
+                    sh """
+                        docker cp ./create_backup.sh eliflow_mongodb:/opt/eliflow_scripts/
+                        docker exec -u 0 -it eliflow_mongodb bash /opt/eliflow_scripts/create_backup.sh ${nodeProp['max.count']}
+                       """
                 }
             }
             post {
                 failure {
-                    sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
+                    env.status = "FAILED"
                 }
                 success {
-                    sh "echo 'SUCCESS' > ${env.stateFile}"
+                    env.status = "SUCCESS"
                 }
             }
         }
@@ -151,9 +90,7 @@ pipeline {
     post {
         always {
             script {
-                def state = readFile(file: "${env.stateFile}").trim().replace("\n", "")
-
-                String resultMessage = "${env.buildFinalMessage} - ${state}"
+                String resultMessage = "${env.buildFinalMessage} - ${env.state}"
                 echo "______Status:______"
                 echo "${resultMessage}"
 //                     sh """
