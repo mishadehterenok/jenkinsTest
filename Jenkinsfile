@@ -76,7 +76,7 @@ pipeline {
                 sh "rm -rf ${env.project}"
                 sh "git clone --progress https://ayurkov:perpentum@gitlab.elinext.com/eliflow/backend-new.git ${env.project}"
                 dir ("${env.project}") {
-                sh "git checkout ${env.branch_name}"
+                    sh "git checkout ${env.branch_name}"
                 }
             }
             post {
@@ -115,7 +115,9 @@ pipeline {
                             sh "docker rm -f \$(${env.grepOldContainers})"
                         }
                         echo "Starting up new container"
-                        sh "docker compose up -d mongodb"
+                        dir ("${env.project}") {
+                            sh "docker compose up -d mongodb"
+                        }
                         sleep(60)
                         def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
 
