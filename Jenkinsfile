@@ -114,7 +114,7 @@ pipeline {
                             sh "docker rm -f \$(${env.grepOldContainers})"
                         }
                         echo "Starting up new container"
-                        sh "docker-compose up -d mongodb"
+                        sh "docker compose up -d mongodb"
                         sleep(60)
                         def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
 
