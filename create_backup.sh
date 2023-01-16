@@ -1,11 +1,11 @@
 #!/bin/bash
 
-DIR=/var/opt/db_backups
+DIR=/opt/db_backups
 DATABASE=eliflow
 DEST=$DIR/$(date +%d-%m-%y_%T--"$DATABASE")
 MAX_DUMPS=$1
 
-mkdir "$DIR"
+
 COUNT=$(find $DIR -mindepth 1 -maxdepth 1 -type d | wc -l)
 echo "Number of available dumps: $COUNT"
 echo "Maximum possible number of dumps: $MAX_DUMPS"
