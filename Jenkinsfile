@@ -38,7 +38,6 @@ pipeline {
         telegramUrl = "https://api.telegram.org/bot1496513691:AAH65fJ_WDVUVst9v3XKlcK4oE7XKRrVnqc/sendMessage"
 
         stateFile = "state.log"
-//         PATH="/usr/local/bin/docker-compose"
     }
 
     stages {
@@ -50,6 +49,7 @@ pipeline {
                     sh 'docker compose version'
                     echo """
                     env.branch_name - ${env.branch_name}
+                    bb
                     max.count - ${nodeProp['max.count']}
                     job.frequency - ${nodeProp['job.frequency']}
                     timezone - ${nodeProp['timezone']}
@@ -163,19 +163,19 @@ pipeline {
                 String resultMessage = "${env.buildFinalMessage} - ${state}"
                 echo "______Status:______"
                 echo "${resultMessage}"
-//                     sh """
-//                         curl -X POST -H 'Content-Type: application/json' \\
-//                         -d '{"chat_id": "${env.chatId}", "text": "${deployMessage}", "disable_notification": false}' \\
-//                         ${env.telegramUrl}
-//                        """
+                    sh """
+                        curl -X POST -H 'Content-Type: application/json' \\
+                        -d '{"chat_id": "${env.chatId}", "text": "${deployMessage}", "disable_notification": false}' \\
+                        ${env.telegramUrl}
+                       """
             }
-//             cleanWs()
-//             dir("${env.WORKSPACE}") {
-//                 deleteDir()
-//             }
-//             dir("${env.WORKSPACE}@tmp") {
-//                 deleteDir()
-//             }
+            cleanWs()
+            dir("${env.WORKSPACE}") {
+                deleteDir()
+            }
+            dir("${env.WORKSPACE}@tmp") {
+                deleteDir()
+            }
         }
     }
 }
