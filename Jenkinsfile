@@ -53,8 +53,8 @@ pipeline {
                     timezone - ${nodeProp['timezone']}
                     frequency - ${frequency}
                     """
-                    env.buildStartMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation started #${env.BUILD_NUMBER}"
-                    env.buildFinalMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup finished #${env.BUILD_NUMBER}"
+                    env.buildStartMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation job started #${env.BUILD_NUMBER}"
+                    env.buildFinalMessage = "${env.project} CI/CD #${env.BRANCH_NAME} backup creation job finished #${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -86,8 +86,8 @@ pipeline {
         stage("Run database container") {
             environment {
                 dockerContainer = "eliflow_mongodb"
-                grepOldContainers = "docker ps -a --format '{{.Names}}'' | grep mongodb"
-                grepRunningContainer = "docker ps --format '{{.Names}}'' | grep ${dockerContainer}"
+                grepOldContainers = "docker ps -a --format '{{.Names}}' | grep mongodb"
+                grepRunningContainer = "docker ps --format '{{.Names}}' | grep ${dockerContainer}"
             }
             steps {
                 script {
@@ -110,7 +110,7 @@ pipeline {
                             sh "docker rm -f \$(${env.grepOldContainers})"
                         }
                         echo "Starting up new container"
-                        sh "docker-compose up -d mongodb"
+                        sh "/usr/local/bin/docker-compose up -d mongodb"
                         sleep(60)
                         def isContainerRunning = sh(script: "docker container inspect -f '{{.State.Running}}' ${env.dockerContainer}", returnStdout: true).trim()
 
