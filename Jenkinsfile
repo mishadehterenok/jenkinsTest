@@ -74,33 +74,16 @@ pipeline {
                     echo "=================BACKUP ACTION========================"
                     sh """
                         docker cp ./create_backup.sh eliflow_mongodb:/opt/
-                        docker exec -u 0 -it eliflow_mongodb bash /opt/create_backup.sh ${nodeProp['max.count']}
+                        docker exec -u 0 -i eliflow_mongodb bash /opt/create_backup.sh ${nodeProp['max.count']}
                        """
                 }
             }
-//             post {
-//                 failure {
-//                 script{
-//                 env.status="FAIL"
-//                 }
-//                     sh "echo 'FAILED TO CREATE BACKUP' > ${env.stateFile}"
-//                 }
-//                 success {
-//                 script{
-//                                 env.status="SUCCESS"
-//                                 }
-//                     sh "echo 'SUCCESS' > ${env.stateFile}"
-//                 }
-//             }
         }
     }
     post {
         always {
             script {
-//                 def state = readFile(file: "${env.stateFile}").trim().replace("\n", "")
                 String resultMessage = "${env.buildFinalMessage} - ${currentBuild.currentResult}"
-                echo "______Status:______"
-                echo "${resultMessage}"
 //                     sh """
 //                         curl -X POST -H 'Content-Type: application/json' \\
 //                         -d '{"chat_id": "${env.chatId}", "text": "${resultMessage}", "disable_notification": false}' \\
