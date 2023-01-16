@@ -56,11 +56,11 @@ pipeline {
         stage("Pipeline Start Notification") {
             steps {
                 echo "${env.buildStartMessage}"
-//                 sh """
-//                     curl -X POST -H 'Content-Type: application/json' \\
-//                     -d '{"chat_id": "${env.chatId}", "text": "${env.buildStartMessage}","disable_notification": false}' \\
-//                     ${env.telegramUrl}
-//                    """
+                sh """
+                    curl -X POST -H 'Content-Type: application/json' \\
+                    -d '{"chat_id": "${env.chatId}", "text": "${env.buildStartMessage}","disable_notification": false}' \\
+                    ${env.telegramUrl}
+                   """
             }
         }
         stage("Backup creation") {
@@ -84,11 +84,11 @@ pipeline {
         always {
             script {
                 String resultMessage = "${env.buildFinalMessage} - ${currentBuild.currentResult}"
-//                     sh """
-//                         curl -X POST -H 'Content-Type: application/json' \\
-//                         -d '{"chat_id": "${env.chatId}", "text": "${resultMessage}", "disable_notification": false}' \\
-//                         ${env.telegramUrl}
-//                        """
+                    sh """
+                        curl -X POST -H 'Content-Type: application/json' \\
+                        -d '{"chat_id": "${env.chatId}", "text": "${resultMessage}", "disable_notification": false}' \\
+                        ${env.telegramUrl}
+                       """
             }
         }
     }
