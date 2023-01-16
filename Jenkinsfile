@@ -100,6 +100,7 @@ pipeline {
                     else {
                     sh "docker ps"
                     echo "${PATH}"
+                    sh 'ls'
                         echo "No working containers found with name: ${env.dockerContainer}"
                         String[] containers = []
                         def statusCode = sh(script: "${env.grepOldContainers}", returnStatus: true)
