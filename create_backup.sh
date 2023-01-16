@@ -20,4 +20,5 @@ echo "Dump creation started for database: $DATABASE"
 $COMMAND
 echo "Dump created: $DEST"
 
+
 exit 0
