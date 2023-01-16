@@ -4,7 +4,6 @@ DIR=/var/opt/db_backups
 DATABASE=eliflow
 DEST=$DIR/$(date +%d-%m-%y_%T--"$DATABASE")
 MAX_DUMPS=$1
-COMMAND="mongodump --uri mongodb://root:1111@eliflow_mongodb:14004/$DATABASE?authSource=admin -o $DEST"
 
 mkdir "$DIR"
 COUNT=$(find $DIR -mindepth 1 -maxdepth 1 -type d | wc -l)
@@ -18,7 +17,7 @@ while [[ $COUNT -ge $MAX_DUMPS ]]; do
 done
 
 echo "Dump creation started for database: $DATABASE"
-$COMMAND
+mongodump --uri mongodb://root:1111@eliflow_mongodb:14004/$DATABASE?authSource=admin -o "$DEST"
 echo "Dump created: $DEST"
 
 
