@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=/opt/db_backups
+DIR=/var/opt/db_backups
 DATABASE=eliflow
 DEST=$DIR/$(date +%d-%m-%y_%T--"$DATABASE")
 MAX_DUMPS=$1
