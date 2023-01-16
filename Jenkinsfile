@@ -53,15 +53,15 @@ pipeline {
                 }
             }
         }
-        stage("Pipeline Start Notification") {
-            steps {
+//         stage("Pipeline Start Notification") {
+//             steps {
 //                 sh """
 //                     curl -X POST -H 'Content-Type: application/json' \\
 //                     -d '{"chat_id": "${env.chatId}", "text": "${env.buildStartMessage}","disable_notification": false}' \\
 //                     ${env.telegramUrl}
 //                    """
-            }
-        }
+//             }
+//         }
         stage("Backup creation") {
             environment {
                 dockerContainer = "eliflow_mongodb"
