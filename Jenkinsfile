@@ -75,8 +75,6 @@ pipeline {
                     sh """
                         docker cp ./create_backup.sh eliflow_mongodb:/opt/
                         docker exec -u 0 -i eliflow_mongodb bash /opt/create_backup.sh ${nodeProp['max.count']}
-                        docker exec -u 0 -i eliflow_mongodb bash ls
-                        docker exec -u 0 -i eliflow_mongodb bash cd var/opt/ ls
                        """
                 }
             }
