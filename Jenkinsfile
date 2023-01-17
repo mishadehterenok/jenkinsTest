@@ -79,6 +79,7 @@ pipeline {
                     }
                     else {
                         error("No working containers found with name '${env.dockerContainer}', aborting the build.")
+                    }
                 }
             }
         }
